@@ -54,7 +54,7 @@ export default function ApplicationDetail({ params }: { params: { id: string } }
         setApplication(data.application);
       } catch (err: any) {
         setError(err.message || 'An error occurred');
-        console.error('Error fetching application:', err);
+        // console.error('Error fetching application:', err);
       } finally {
         setLoading(false);
       }
@@ -113,7 +113,7 @@ export default function ApplicationDetail({ params }: { params: { id: string } }
       setApplication(data.application);
     } catch (err: any) {
       setError(err.message || 'Failed to update status');
-      console.error('Error updating status:', err);
+      // console.error('Error updating status:', err);
     }
   };
 
