@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     
     // Fetch applications with filter if search is provided
     const applications = await prisma.application.findMany({
-      where: whereCondition,
+      where: whereCondition as any,
       orderBy: { updatedAt: 'desc' },
     });
     
