@@ -146,6 +146,10 @@ export default function Home() {
           <Users className="text-amber-400" size={24} />
           DA Hacks Admission Panel
         </div>
+        <div className="text-yellow-400 text-sm">
+          Disclaimer: Desktop view is recommended
+        </div>
+
         <div className="flex items-center gap-4">
           <button 
             onClick={handleLogout}
