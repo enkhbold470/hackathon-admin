@@ -88,7 +88,7 @@ export default function ApplicationDetail({ params }: { params: Promise<{ id: st
       case 'waitlisted':
         return { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Waitlisted' };
       case 'rejected':
-        return { bg: 'bg-red-100', text: 'text-red-800', label: 'Rejected' };
+        return { bg: 'bg-red-100', text: 'text-red-800', label: 'Resetted' };
       case 'confirmed':
         return { bg: 'bg-blue-100', text: 'text-blue-800', label: 'Confirmed' };
       default:
@@ -305,7 +305,7 @@ export default function ApplicationDetail({ params }: { params: Promise<{ id: st
                   }`}
                   disabled={application.status === 'rejected'}
                 >
-                  Reject Application
+                  Reset Application(only if user requests it)
                 </button>
               </div>
             </div>

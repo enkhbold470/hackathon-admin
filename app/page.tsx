@@ -144,7 +144,7 @@ export default function Home() {
           fontFamily: typography.fontFamily.base
         }}>
           <Users className="text-amber-400" size={24} />
-          Admission Panel
+          DA Hacks Admission Panel
         </div>
         <div className="flex items-center gap-4">
           <button 
@@ -207,7 +207,7 @@ export default function Home() {
                   <th className="px-6 py-4 text-gray-700" style={{ 
                     fontSize: typography.fontSize.questionTitle,
                     fontWeight: typography.fontWeight.semibold
-                  }}>User ID</th>
+                  }}>Submitted (Los Angeles Time)</th>
                   <th className="px-6 py-4 text-gray-700" style={{ 
                     fontSize: typography.fontSize.questionTitle,
                     fontWeight: typography.fontWeight.semibold
@@ -231,7 +231,13 @@ export default function Home() {
                         {application.cwid || 'N/A'}
                       </td>
                       <td className="px-6 py-4 text-gray-600" style={{ fontSize: typography.fontSize.answerOption }}>
-                        {application.userId}
+                        {new Date(application.updatedAt).toLocaleString('en-US', { 
+                          year: 'numeric', 
+                          month: '2-digit', 
+                          day: '2-digit', 
+                          hour: '2-digit', 
+                          minute: '2-digit', 
+                        })}
                       </td>
                       <td className="px-6 py-4">
                         <span className="px-3 py-1 rounded-full font-medium inline-flex items-center justify-center" style={{ 
@@ -242,7 +248,7 @@ export default function Home() {
                           borderRadius: borderRadius.full
                         }}>
                           <span className={`w-2 h-2 ${statusBadge.dotColor} rounded-full mr-2`}></span>
-                          {statusBadge.text}
+                          {statusBadge.text === 'Rejected' ? 'Resetted' : statusBadge.text}
                         </span>
                       </td>
                       <td className="px-6 py-4">
