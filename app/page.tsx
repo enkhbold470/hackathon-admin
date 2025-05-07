@@ -271,9 +271,9 @@ export default function Home() {
                           >
                             Waitlist
                           </button>
-                          <button 
+                          {/* <button 
                             onClick={() => updateApplicationStatus(application.id, 'rejected')}
-                            className="px-3 py-2 text-white text-sm font-medium shadow-sm hover:shadow transition-all" 
+                            className="p-1 text-white text-sm font-medium shadow-sm hover:shadow transition-all" 
                             style={{ 
                               backgroundColor: '#ef4444',
                               borderRadius: borderRadius.md,
@@ -281,8 +281,8 @@ export default function Home() {
                             }}
                             disabled={application.status === 'rejected'}
                           >
-                            Reject
-                          </button>
+                            Reset
+                          </button> */}
                           <button 
                             onClick={() => router.push(`/applications/${application.id}`)}
                             className="px-3 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 text-sm font-medium shadow-sm flex items-center gap-1 transition-all" 

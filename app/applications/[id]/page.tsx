@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, Loader } from 'lucide-react';
 import { typography, borderRadius } from '@/lib/ui-config';
@@ -30,7 +30,10 @@ interface Application {
   updatedAt: string;
 }
 
-export default function ApplicationDetail({ params }: { params: { id: string } }) {
+export default function ApplicationDetail({ params }: { params: Promise<{ id: string }> }) {
+  const unwrappedParams = use(params);
+  const id = unwrappedParams.id;
+  
   const [application, setApplication] = useState<Application | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +44,7 @@ export default function ApplicationDetail({ params }: { params: { id: string } }
     const fetchApplication = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/applications/${params.id}`);
+        const response = await fetch(`/api/applications/${id}`);
         
         if (!response.ok) {
           if (response.status === 404) {
@@ -60,10 +63,10 @@ export default function ApplicationDetail({ params }: { params: { id: string } }
       }
     };
 
-    if (params.id) {
+    if (id) {
       fetchApplication();
     }
-  }, [params.id]);
+  }, [id]);
 
   // Format date
   const formatDate = (dateString: string) => {
@@ -101,7 +104,7 @@ export default function ApplicationDetail({ params }: { params: { id: string } }
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: params.id, status }),
+        body: JSON.stringify({ id, status }),
       });
       
       if (!response.ok) {
@@ -226,7 +229,7 @@ export default function ApplicationDetail({ params }: { params: { id: string } }
                 <h2 className="text-lg font-semibold mb-2 text-gray-800">Application Details</h2>
                 <div className="space-y-4">
                   <div>
-                    <span className="text-gray-600 text-sm">Why Attend:</span>
+                    <span className="text-gray-600 text-sm">Why do you wanna come to DAHacks?</span>
                     <p className="text-gray-800 mt-1 bg-gray-50 p-3 rounded">{application.whyAttend || 'N/A'}</p>
                   </div>
                   <div>
@@ -238,7 +241,7 @@ export default function ApplicationDetail({ params }: { params: { id: string } }
                     <p className="text-gray-800 mt-1 bg-gray-50 p-3 rounded">{application.selfDescription || 'N/A'}</p>
                   </div>
                   <div>
-                    <span className="text-gray-600 text-sm">Future Plans:</span>
+                    <span className="text-gray-600 text-sm">What do you wanna build? (can be technical or non-technical)</span>
                     <p className="text-gray-800 mt-1 bg-gray-50 p-3 rounded">{application.futurePlans || 'N/A'}</p>
                   </div>
                   <div>
