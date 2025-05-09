@@ -183,6 +183,18 @@ export default function Home() {
         </form>
       </div>
 
+      {/* Application Stats */}
+      <div className="px-6 pb-2">
+        <div className="flex items-center gap-2 text-white">
+          <span style={{ 
+            fontSize: typography.fontSize.questionTitle,
+            fontWeight: typography.fontWeight.medium
+          }}>
+            {searchQuery ? `Showing ${applications.length} ${applications.length === 1 ? 'result' : 'results'}` : `Total applications: ${applications.length}`}
+          </span>
+        </div>
+      </div>
+
       {/* Table */}
       <div className="px-6 py-6">
         {error && (
