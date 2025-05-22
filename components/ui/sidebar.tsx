@@ -1,9 +1,12 @@
 "use client"
 
 import * as React from "react"
+import * as React from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeft } from "lucide-react"
+import { BarChart, PanelLeft } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -408,7 +411,23 @@ const SidebarContent = React.forwardRef<
         className
       )}
       {...props}
-    />
+    >
+      {/* Existing children will be preserved if any are passed */}
+      {children}
+      {/* Added Statistics Link */}
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <Link href="/stats" passHref legacyBehavior>
+            <SidebarMenuButton asChild isActive={pathname === "/stats"} tooltip="Statistics">
+              <a>
+                <BarChart className="size-4" />
+                <span>Statistics</span>
+              </a>
+            </SidebarMenuButton>
+          </Link>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </div>
   )
 })
 SidebarContent.displayName = "SidebarContent"
