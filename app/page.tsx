@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import uiConfig, { spacing, typography, borderRadius, shadows } from '@/lib/ui-config';
 import colors, { cssVariables } from '@/lib/colors';
-import { Plus, Search, Users, LogOut, Eye } from 'lucide-react';
+import { Plus, Search, Users, LogOut, Eye, BarChart } from 'lucide-react';
 
 interface Application {
   id: number;
@@ -152,6 +152,13 @@ export default function Home() {
 
         <div className="flex items-center gap-4">
           <button 
+            onClick={() => router.push('/stats')}
+            className="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-500 transition-colors text-white rounded-md mr-2"
+          >
+            <BarChart size={18} />
+            <span>Statistics</span>
+          </button>
+          <button 
             onClick={handleLogout}
             className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 transition-colors text-white rounded-md"
           >
@@ -190,7 +197,7 @@ export default function Home() {
             fontSize: typography.fontSize.questionTitle,
             fontWeight: typography.fontWeight.medium
           }}>
-            {searchQuery ? `Showing ${applications.length} ${applications.length === 1 ? 'result' : 'results'}` : `Total applications: ${applications.length}`}
+            {searchQuery ? `Showing ${applications.length} ${applications.length === 1 ? 'result' : 'results'}` : `Total applications: ${applications.length}, Accepted: ${applications.filter(app => app.status === 'accepted').length}, Waitlisted: ${applications.filter(app => app.status === 'waitlisted').length}, Confirmed: ${applications.filter(app => app.status === 'confirmed').length}`}
           </span>
         </div>
       </div>
