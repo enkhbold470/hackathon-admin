@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import uiConfig, { spacing, typography, borderRadius, shadows } from '@/lib/ui-config';
-import colors, { cssVariables } from '@/lib/colors';
-import { Plus, Search, Users, LogOut, Eye, BarChart } from 'lucide-react';
+import { typography, borderRadius } from '@/lib/ui-config';
+import { Search, Users, LogOut, Eye, BarChart } from 'lucide-react';
 
 interface Application {
   id: number;
@@ -170,7 +169,7 @@ export default function Home() {
 
       {/* Search Bar */}
       <div className="px-6 py-6" style={{ backgroundColor: '#0f172a' }}>
-        <form onSubmit={handleSearch} className="relative">
+        <form onChange={handleSearch} className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search size={18} className="text-gray-400" />
           </div>
