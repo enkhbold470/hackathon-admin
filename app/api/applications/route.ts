@@ -6,8 +6,9 @@ export async function GET(request: NextRequest) {
   try {
     // Get search parameter if any
     const searchQuery = request.nextUrl.searchParams.get('search') || '';
+    const filters = request.nextUrl.searchParams.get('filters') || '';
     
-    // Define the filter condition based on search query
+    // Define the filter condition
     const whereCondition = searchQuery
       ? {
           OR: [
@@ -16,17 +17,23 @@ export async function GET(request: NextRequest) {
             { userId: { contains: searchQuery, mode: 'insensitive' } },
           ],
         }
-      : {};
+      : {
+          status: { in: filters.split(',') },
+        };
     
     // Fetch applications with filter if search is provided
     const applications = await prisma.application.findMany({
       where: whereCondition as any,
       orderBy: { updatedAt: 'desc' },
     });
-    
+
+    // Get total count of applications
+    const totalApplications = await prisma.application.count();
+
     return NextResponse.json({ 
-      success: true, 
-      applications 
+      success: true,
+      total: totalApplications, // Actual total number of applications (not based on filters)
+      applications
     });
   } catch (error: any) {
     console.error('Error fetching applications:', error);
