@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { typography, borderRadius } from '@/lib/ui-config';
-import { Search, Users, LogOut, Eye, BarChart } from 'lucide-react';
+import { Search, Users, LogOut, Eye, BarChart, ChevronDown } from 'lucide-react';
 
 interface Application {
   id: number;
@@ -22,6 +22,13 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+
+  const DEFAULT_FILTERS = ["accepted", "confirmed", "waitlisted", "rejected", "pending"];
+  const [statusFilters, setStatusFilters] = useState<string[]>(DEFAULT_FILTERS);
+
+  const filterMenuRef = useRef<HTMLDivElement>(null);
+
   const router = useRouter();
 
   // Fetch applications
@@ -90,6 +97,18 @@ export default function Home() {
   // Initial fetch on component mount
   useEffect(() => {
     fetchApplications();
+
+    function handleClickOutside(event: MouseEvent) {
+      if (filterMenuRef.current && !filterMenuRef.current.contains(event.target as Node | null)) {
+        setFilterMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside);
+    };
   }, []);
 
   // Get status badge color
@@ -132,6 +151,18 @@ export default function Home() {
         };
     }
   };
+
+  const handleStatusFilterChange = (checked: boolean, status: string) => {
+    if (checked) {
+      setStatusFilters([...statusFilters, status]);
+    } else {
+      setStatusFilters(statusFilters.filter((filter) => filter !== status));
+    }
+  };
+
+  useEffect(() => {
+    console.log(statusFilters);
+  }, [statusFilters]);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
@@ -192,12 +223,37 @@ export default function Home() {
       {/* Application Stats */}
       <div className="px-6 pb-2">
         <div className="flex items-center gap-2 text-white">
-          <span style={{ 
-            fontSize: typography.fontSize.questionTitle,
-            fontWeight: typography.fontWeight.medium
-          }}>
-            {searchQuery ? `Showing ${applications.length} ${applications.length === 1 ? 'result' : 'results'}` : `Total applications: ${applications.length}, Accepted: ${applications.filter(app => app.status === 'accepted').length}, Waitlisted: ${applications.filter(app => app.status === 'waitlisted').length}, Confirmed: ${applications.filter(app => app.status === 'confirmed').length}`}
-          </span>
+          <div ref={filterMenuRef}>
+            <button 
+              type="button" 
+              className="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-500 transition-colors text-white rounded-md"
+              onClick={() => setFilterMenuOpen(!filterMenuOpen)}
+            >
+              <span style={{ 
+                fontSize: typography.fontSize.questionTitle,
+                fontWeight: typography.fontWeight.medium
+              }}>
+                Filter
+              </span>
+              <ChevronDown size={18} className="text-white" />
+            </button>
+            {filterMenuOpen && (
+              <div className="absolute z-10 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg py-1">
+                {DEFAULT_FILTERS.map((filter) => (
+                  <div className="px-3 py-2 flex items-center gap-2" key={filter}>
+                    <input 
+                      type="checkbox" 
+                      id={filter} 
+                      name={filter} 
+                      checked={statusFilters.includes(filter)}
+                      onChange={(e) => handleStatusFilterChange(e.target.checked, filter)}
+                    />
+                    <label htmlFor={filter}>{filter.charAt(0).toUpperCase() + filter.slice(1)}</label> {/* capitalize first letter */}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
