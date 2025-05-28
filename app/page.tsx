@@ -22,28 +22,38 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
 
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const DEFAULT_FILTERS = ["accepted", "confirmed", "waitlisted", "rejected", "pending"];
   const [statusFilters, setStatusFilters] = useState<string[]>(DEFAULT_FILTERS);
-
   const filterMenuRef = useRef<HTMLDivElement>(null);
+  const [totalApps, setTotalApps] = useState(0);
 
   const router = useRouter();
 
   // Fetch applications
-  const fetchApplications = async (search = '') => {
+  const fetchApplications = async (search = '', filters = DEFAULT_FILTERS) => {
     try {
       setLoading(true);
-      const queryParam = search ? `?search=${encodeURIComponent(search)}` : '';
-      const response = await fetch(`/api/applications${queryParam}`);
+      const params = new URLSearchParams();
+      if (search) {
+        params.set('search', search);
+      }
+      if (filters) {
+        params.set('filters', filters.join(','));
+      }
+
+      const url = `/api/applications?${params.toString()}`;
+      const response = await fetch(url);
       
       if (!response.ok) {
         throw new Error('Failed to fetch applications');
       }
       
       const data = await response.json();
+
       setApplications(data.applications);
+      setTotalApps(data.total);
     } catch (err: any) {
       setError(err.message || 'An error occurred');
       console.error('Error fetching applications:', err);
@@ -81,23 +91,24 @@ export default function Home() {
       }
       
       // Refresh applications list
-      fetchApplications(searchQuery);
+      refreshApplications();
     } catch (err: any) {
       setError(err.message || 'Failed to update status');
       console.error('Error updating status:', err);
     }
   };
 
-  // Handle search
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchApplications(searchQuery);
+  const refreshApplications = () => {
+    fetchApplications(searchQuery, statusFilters);
   };
+
+  // Fetch applications whenever search query or status filters change. Also on mount
+  useEffect(() => {
+    refreshApplications();
+  }, [searchQuery, statusFilters]);
 
   // Initial fetch on component mount
   useEffect(() => {
-    fetchApplications();
-
     function handleClickOutside(event: MouseEvent) {
       if (filterMenuRef.current && !filterMenuRef.current.contains(event.target as Node | null)) {
         setFilterMenuOpen(false);
@@ -160,10 +171,6 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    console.log(statusFilters);
-  }, [statusFilters]);
-
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
       {/* Header */}
@@ -200,7 +207,7 @@ export default function Home() {
 
       {/* Search Bar */}
       <div className="px-6 py-6" style={{ backgroundColor: '#0f172a' }}>
-        <form onChange={handleSearch} className="relative">
+        <form className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search size={18} className="text-gray-400" />
           </div>
@@ -220,7 +227,7 @@ export default function Home() {
         </form>
       </div>
 
-      {/* Application Stats */}
+      {/* Filter dropdown */}
       <div className="px-6 pb-2">
         <div className="flex items-center gap-2 text-white">
           <div ref={filterMenuRef}>
@@ -254,6 +261,7 @@ export default function Home() {
               </div>
             )}
           </div>
+          <span className="ml-2">Showing {applications.length} of {totalApps} {totalApps === 1 ? 'application' : 'applications'}</span>
         </div>
       </div>
 
