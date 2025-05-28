@@ -246,6 +246,17 @@ export default function Home() {
             </button>
             {filterMenuOpen && (
               <div className="absolute z-10 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg py-1">
+                <div className="px-3 py-2 text-blue-600 underline">
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setStatusFilters(DEFAULT_FILTERS);
+                    }}
+                  >
+                    Reset all
+                  </a>
+                </div>
                 {DEFAULT_FILTERS.map((filter) => (
                   <div className="px-3 py-2 flex items-center gap-2" key={filter}>
                     <input 
