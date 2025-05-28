@@ -207,7 +207,7 @@ export default function Home() {
 
       {/* Search Bar */}
       <div className="px-6 py-6" style={{ backgroundColor: '#0f172a' }}>
-        <form className="relative">
+        <form className="relative" onSubmit={(e) => e.preventDefault()}>
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search size={18} className="text-gray-400" />
           </div>
